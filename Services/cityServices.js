@@ -35,7 +35,7 @@ exports.cityValidation = async (cityName) => {
   try {
     const configHeaders = {
       headers: {
-        "X-Api-Key": "S8R5Gpo5ZTAEj5X2Hb7vtA==CW3gmLGvLjc4BFKt", // Example: A custom header
+        "X-Api-Key": process.env.CITY_VALIDATION_API_KEY, // Example: A custom header
       },
     };
     const cityValidationResponse = await axios.get(
@@ -75,18 +75,15 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response interceptor to handle token expiration and refresh
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    // If 401 and not already attempting to refresh
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true; // Mark to prevent infinite loops
 
       try {
-        // const refreshToken = localStorage.getItem("refreshToken"); // Or retrieve from HttpOnly cookie
         const res = await axios.post(`${config.apiBaseUrl}/auth/refresh`, {
           refreshToken: "xyz456",
         });
@@ -95,12 +92,10 @@ api.interceptors.response.use(
 
         return api(originalRequest); // Retry the original request
       } catch (refreshError) {
-        // Refresh token expired or invalid, redirect to login
         console.error(
           "Refresh token expired or invalid, logging out:",
           refreshError
         );
-        // Implement logout or redirect to login page
         return Promise.reject(refreshError);
       }
     }

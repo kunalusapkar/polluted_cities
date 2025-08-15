@@ -1,0 +1,5 @@
+{
+    "apiBaseUrl": "https://be-recruitment-task.onrender.com",
+    "wikiBaseUrl": "https://api.wikimedia.org/core/v1/wikipedia/en/page",
+    "cityCheckBaseUrl": "https://api.api-ninjas.com/v1/city"
+}

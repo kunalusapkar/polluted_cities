@@ -1,19 +1,13 @@
 const mysql = require("mysql2");
 
 const db = mysql.createPool({
-  host: "localhost",
-  user: "root",
-  password: "password",
-  database: "polluted_cities",
-  // connectionLimit: mysqlConfig.logsmysql.connectionLimit,
-  // connectTimeout: mysqlConfig.logsmysql.connectTimeout,
-  // acquireTimeout: mysqlConfig.logsmysql.acquireTimeout,
-  // timeout: mysqlConfig.logsmysql.timeout
+  host: process.env.HOST,
+  user: process.env.NAME,
+  password: process.env.PASSWORD,
+  database: process.env.DATABASE,
 });
 
-// CREATE USER 'estate_user'@'localhost' IDENTIFIED BY 'Password123#@!';
-// GRANT ALL PRIVILEGES ON  *.* to 'estate_user'@'localhost';
-// CREATE DATABASE realestate_db;
+console.log("process.env.host------>", process.env.NAME);
 exports.runQuery = function (query, values) {
   return new Promise(function (resolve, reject) {
     db.getConnection((error, connection) => {

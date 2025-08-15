@@ -1,4 +1,5 @@
 const axios = require("axios");
+const config = require("../config.json");
 
 exports.getPollutedCitiesAPI = async () => {
   var currentPage = 1;
@@ -32,29 +33,25 @@ exports.getPollutedCitiesAPI = async () => {
 
 exports.cityValidation = async (cityName) => {
   try {
-    const config = {
+    const configHeaders = {
       headers: {
         "X-Api-Key": "S8R5Gpo5ZTAEj5X2Hb7vtA==CW3gmLGvLjc4BFKt", // Example: A custom header
       },
     };
     const cityValidationResponse = await axios.get(
-      `https://api.api-ninjas.com/v1/city?name=${cityName}`,
-      config
-    );
-    console.log(
-      "cityValidationResponse.data---->",
-      cityValidationResponse.data
+      `${config.cityCheckBaseUrl}?name=${cityName}`,
+      configHeaders
     );
     return cityValidationResponse.data;
   } catch (error) {
-    console.log("error from cvd",error);
+    console.log("error from cvd", error);
   }
 };
 
 exports.cityDescription = async (cityName) => {
   try {
     const cityDescriptionResponse = await axios.get(
-      `https://api.wikimedia.org/core/v1/wikipedia/en/page/${cityName}/description`
+      `${config.wikiBaseUrl}/${cityName}/description`
     );
     return cityDescriptionResponse?.data;
   } catch (error) {
@@ -63,7 +60,7 @@ exports.cityDescription = async (cityName) => {
 };
 
 const api = axios.create({
-  baseURL: "https://be-recruitment-task.onrender.com",
+  baseURL: config.apiBaseUrl,
 });
 
 // Request interceptor to add the access token
@@ -90,15 +87,10 @@ api.interceptors.response.use(
 
       try {
         // const refreshToken = localStorage.getItem("refreshToken"); // Or retrieve from HttpOnly cookie
-        const res = await axios.post(
-          "https://be-recruitment-task.onrender.com/auth/refresh",
-          {
-            refreshToken: "xyz456",
-          }
-        );
+        const res = await axios.post(`${config.apiBaseUrl}/auth/refresh`, {
+          refreshToken: "xyz456",
+        });
         const newAccessToken = res.data.token;
-        console.log("Rttttt1111111111111111-------->", res.data);
-        console.log("Rttttt2222222222-------->", newAccessToken);
         originalRequest.headers.Authorization = `${newAccessToken}`;
 
         return api(originalRequest); // Retry the original request
